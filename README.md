@@ -6,6 +6,12 @@
 
 ---
 
+## 📜 Supported Platforms
+
+BlackHole++ supports over 40+ platforms, including popular ones like **Facebook**, **Twitter**, **TikTok**, and many more. For the full list of supported platforms, please check out the [Supported Sites](https://github.com/itx-jd/Black-Hole/blob/main/Intructions/Intructions.md).
+
+---
+
 ## ✨ Key Features  
 - **Support for 40+ Platforms:** From social media to other websites, we’ve got you covered.  
 - **Clean UI:** No bloat, no distractions—just pure functionality.  
