@@ -1,0 +1,14 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Base application theme. -->
+    <style name="Base.Theme.SingleTap" parent="Theme.Material3.DayNight.NoActionBar">
+        <!-- Customize your light theme here. -->
+         <item name="colorPrimary">@color/black_shade</item>
+         <item name="colorAccent">@color/black_shade</item>
+        <item name="android:statusBarColor">#16191A</item>
+        <item name="android:navigationBarColor">@android:color/transparent</item>
+        <item name="android:windowTranslucentNavigation">true</item>
+<!--        <item name="android:windowTranslucentStatus">true</item>-->
+    </style>
+
+    <style name="Theme.SingleTap" parent="Base.Theme.SingleTap" />
+</resources>

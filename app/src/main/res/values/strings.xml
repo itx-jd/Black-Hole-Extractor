@@ -1,0 +1,23 @@
+<resources>
+    <string name="app_name">BlackHole ++</string>
+
+<!--    Grab api key using this link 'https://rapidapi.com/nguyenmanhict-MuTUtGWD7K/api/social-download-all-in-one' -->
+    <string name="social_download_all_in_one_key">paste_api_key_here</string>
+
+<!--    Grab api key using this link 'https://rapidapi.com/ugoBoy/api/youtube-video-and-shorts-downloader1' -->
+    <string name="youtube_video_and_shorts_downloader">paste_api_key_here</string>
+
+<!--    This is the url of the latest apk file-->
+    <string name="latest_apk_url">https://github.com/itx-jd/Black-Hole/raw/main/latest/BlackHole%2B%2B_v</string>
+
+<!--    Supported Platform Dialog-->
+    <string name="platform_request_form">paste_form_link_here</string>
+
+    <string name="supported_platform">Bandcamp, Bilibili, Bitchute, Capcut, Dailymotion, Douyin, Espn, Febspot, Facebook, Getstickerpack, Hipi, Imgur, Instagram, Ixigua, iFunny, Izlesene, Linkedin, Likee, Miaopai, Meipai, Mixcloud, National Video, Pinterest, Rumble, Reddit, Sharechat, Sina, Soundcloud, Spotify, SohuTv, Ted, Telegram, Threads, Tumblr, Twitter, Vimeo, Weibo, Xiaohongshu, Xiaoying, Youtube Shorts (Beta), Zingmp3</string>
+
+<!--    Social Media Links-->
+    <string name="x.com">https://x.com/@itx_jdd</string>
+    <string name="github.com">https://github.com/itx-jd/Black-Hole</string>
+    <string name="buymeacoffee.com">https://buymeacoffee.com/jadi</string>
+
+</resources>

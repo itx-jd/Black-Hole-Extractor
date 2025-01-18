@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.MainActivity"
+    android:orientation="vertical"
+    android:background="@drawable/background">
+
+   <ImageView
+       android:layout_width="wrap_content"
+       android:layout_height="wrap_content"
+       android:layout_marginTop="60dp"
+       android:layout_marginLeft="20dp"
+       android:alpha="0.5"
+      android:src="@drawable/info"
+       android:onClick="getInfo"/>
+
+   <LinearLayout
+       android:id="@+id/layout_title"
+       android:layout_width="wrap_content"
+       android:layout_height="wrap_content"
+       android:gravity="center"
+       android:orientation="vertical"
+       android:visibility="visible"
+       android:layout_centerHorizontal="true"
+       android:layout_marginTop="80dp">
+
+      <TextView
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:fontFamily="@font/inter_tight_thin"
+          android:text="BLACK HOLE"
+          android:textColor="@color/white"
+          android:textSize="30dp" />
+
+      <TextView
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_marginBottom="30dp"
+          android:fontFamily="@font/inter_tight_thin"
+          android:text="EXTRACTOR"
+          android:textColor="@color/white"
+          android:textSize="15dp" />
+
+   </LinearLayout>
+
+   <LinearLayout
+       android:layout_width="match_parent"
+       android:layout_height="wrap_content"
+       android:orientation="vertical"
+       android:gravity="center_horizontal"
+       android:layout_centerInParent="true">
+
+      <ImageView
+          android:id="@+id/iv_round"
+          android:layout_width="200dp"
+          android:layout_height="200dp"
+          android:background="@drawable/bt_in_no_back"
+          android:layout_marginTop="40dp"/>
+
+      <LinearLayout
+          android:id="@+id/linearLayout2"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:layout_marginTop="30dp"
+          android:gravity="center"
+          android:orientation="vertical">
+
+         <TextView
+             android:id="@+id/tv_wait"
+             android:layout_width="wrap_content"
+             android:layout_height="wrap_content"
+             android:fontFamily="@font/inter_tight_thin"
+             android:text="Fetching..."
+             android:textColor="@color/white"
+             android:textSize="15dp"
+             android:visibility="invisible" />
+
+         <com.google.android.material.progressindicator.LinearProgressIndicator
+             android:id="@+id/progressBar"
+             android:layout_width="match_parent"
+             android:layout_height="wrap_content"
+             android:layout_below="@id/iv_round"
+             android:layout_marginHorizontal="40dp"
+             android:layout_marginTop="20dp"
+             android:visibility="invisible"
+             app:indicatorColor="#808080"
+             app:trackColor="#424242"
+             app:trackCornerRadius="10dp" />
+
+
+      </LinearLayout>
+
+   </LinearLayout>
+
+
+   <LinearLayout
+       android:id="@+id/layout_follow"
+       android:layout_width="wrap_content"
+       android:layout_height="wrap_content"
+       android:gravity="center"
+       android:orientation="vertical"
+       android:visibility="invisible"
+       android:layout_centerHorizontal="true"
+       android:layout_marginBottom="50dp"
+       android:layout_alignParentBottom="true">
+
+      <TextView
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:fontFamily="@font/inter_tight_thin"
+          android:text="Follow &amp; Join"
+          android:textColor="@color/white" />
+
+
+      <LinearLayout
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_marginTop="10dp"
+          android:gravity="center">
+
+         <ImageView
+             android:layout_width="25dp"
+             android:layout_height="25dp"
+             android:layout_marginHorizontal="10dp"
+             android:src="@drawable/ic_github"
+             android:onClick="github"/>
+
+         <ImageView
+             android:layout_width="25dp"
+             android:layout_height="25dp"
+             android:layout_marginHorizontal="10dp"
+             android:src="@drawable/ic_twitter"
+             android:onClick="twitter"/>
+
+         <ImageView
+             android:layout_width="25dp"
+             android:layout_height="25dp"
+             android:layout_marginHorizontal="10dp"
+             android:src="@drawable/ic_patreon"
+             android:onClick="coffee"/>
+
+      </LinearLayout>
+
+   </LinearLayout>
+
+
+</RelativeLayout>
