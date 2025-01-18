@@ -21,7 +21,7 @@
 ---
 
 ## 📸 Screenshots  
-![](images/screenshots.gif)
+![](assets/screenshots.gif)
 
 ---
 
