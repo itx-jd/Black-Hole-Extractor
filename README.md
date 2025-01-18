@@ -5,7 +5,7 @@
 ---
 
 ## 📥 Download  
-Hit the **Download** button below to get the latest version of BlackHole++ and start downloading videos instantly!
+[![Github All Releases](assets/btn_download.png)](https://github.com/itx-jd/whatsapp-update-manager/raw/main/app/release/latest/WA%20Update%20Manager.apk)
 
 ---
 
@@ -21,7 +21,7 @@ Hit the **Download** button below to get the latest version of BlackHole++ and s
 ---
 
 ## 📸 Screenshots  
-[![Github All Releases](images/btn_download.png)](https://github.com/itx-jd/whatsapp-update-manager/raw/main/app/release/latest/WA%20Update%20Manager.apk)
+![](images/screenshots.gif)
 
 ---
 
