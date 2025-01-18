@@ -1,0 +1,42 @@
+## Supported Sites
+
+- **9GAG**
+- **Bandcamp**
+- **Bitchute**
+- **Capcut**
+- **Douyin**
+- **Dailymotion**
+- **Espn**
+- **Febspot**
+- **Facebook**
+- **Getstickerpack**
+- **Hipi**
+- **Imgur**
+- **Ifunny**
+- **Instagram**
+- **Izlesene**
+- **Linkedin**
+- **Likee**
+- **Miaopai**
+- **Meipai**
+- **Mixcloud**
+- **National Video**
+- **Oke.ru**
+- **Pinterest**
+- **Reddit**
+- **Rumble**
+- **Sharechat**
+- **Sina**
+- **Soundcloud**
+- **Spotify**
+- **SohuTv**
+- **Ted**
+- **Tiktok**
+- **Tumblr**
+- **Twitter**
+- **Vimeo**
+- **Weibo**
+- **Xiaohongshu**
+- **Yingke**
+- **Youtube Shorts (Beta)**
+- **Zingmp3**
