@@ -1,6 +1,6 @@
 # 🚀 BlackHole++  
 
-**BlackHole++** is your go-to app for quick audio/video downloads from 40+ platforms, including **Facebook**, **Twitter**, and **TikTok**. Simple, clean, and junk-free, it lets you save videos to your gallery with just **one click**!
+**BlackHole++** is your (9 MB) lightweight go-to app for quick audio/video downloads from 40+ platforms, including **Facebook**, **Twitter**, and **TikTok**. Simple, clean, and junk-free, it lets you save videos to your gallery with just **one click**!
 
 [![Github All Releases](assets/btn_download.png)](https://raw.githubusercontent.com/itx-jd/Black-Hole-Extractor/main/latest/BlackHole%2B%2B_v1.0.apk)
 
