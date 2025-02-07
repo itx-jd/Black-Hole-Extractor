@@ -1,6 +1,8 @@
 package com.blackhole.downloader.utils;
 
+import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 
 public class IntentUtils {
 
@@ -9,5 +11,11 @@ public class IntentUtils {
             return intent.getStringExtra(Intent.EXTRA_TEXT);
         }
         return null;
+    }
+
+    // browser intent
+    public static void openUrlInBrowser(Context context, String url) {
+        Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+        context.startActivity(browserIntent);
     }
 }

@@ -1,56 +1,52 @@
 package com.blackhole.downloader.ui;
 
-import android.content.Intent;
-import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager;
-import android.net.Uri;
+import static com.blackhole.downloader.utils.IntentUtils.openUrlInBrowser;
+
 import android.os.Build;
 import android.os.Bundle;
-import android.provider.Settings;
-import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.annotation.RequiresApi;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
+import androidx.core.app.ActivityCompat;
 
 import com.blackhole.downloader.R;
-import com.blackhole.downloader.constants.Constant;
 import com.blackhole.downloader.utils.AnimationUtils;
+import com.blackhole.downloader.utils.AppUtils;
 import com.blackhole.downloader.utils.DialogUtils;
 import com.blackhole.downloader.utils.FirebaseUtils;
 import com.blackhole.downloader.utils.IntentUtils;
+import com.blackhole.downloader.utils.PermissionUtils;
 import com.blackhole.downloader.utils.UIUtils;
-import com.blackhole.downloader.utils.VersionUtils;
 import com.blackhole.downloader.utils.VideoUtils;
 import com.google.android.material.progressindicator.LinearProgressIndicator;
-import com.google.firebase.BuildConfig;
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 public class MainActivity extends AppCompatActivity {
 
-    private ImageView iv_round;
+    private ImageView ivRound, ivInfo;
     private LinearProgressIndicator progressBar;
     private LinearLayout layoutTitle, layoutFollow;
-    private TextView tv_wait;
-    private int originalImageResource;
-    private int hoverImageResource;
+    private TextView tvWait;
+
+    private int originalImageResource = R.drawable.bt_in_no_back;
+    private int hoverImageResource = R.drawable.btn_no_back;
+
+    private String shareIntentText = "";
+    private FirebaseAnalytics firebaseAnalytics;
+
+    private static final int PERMISSION_REQUEST_CODE = 123;
 
     public static boolean downloadFroze = false;
-
-    String shareIntentText = "";
-
-    FirebaseAnalytics firebaseAnalytics;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,30 +61,36 @@ public class MainActivity extends AppCompatActivity {
         setupTouchListener();
     }
 
+    /**
+     * Initializes UI elements and sets their default states.
+     */
     private void initializeUI() {
         layoutTitle = findViewById(R.id.layout_title);
         layoutFollow = findViewById(R.id.layout_follow);
-        iv_round = findViewById(R.id.iv_round);
-        tv_wait = findViewById(R.id.tv_wait);
+        ivRound = findViewById(R.id.iv_round);
+        tvWait = findViewById(R.id.tv_wait);
         progressBar = findViewById(R.id.progressBar);
+        ivInfo = findViewById(R.id.iv_info);
 
-        originalImageResource = R.drawable.bt_in_no_back;
-        hoverImageResource = R.drawable.btn_no_back;
-        iv_round.setImageResource(originalImageResource);
-
-        UIUtils.delayedVisibility(layoutTitle, layoutFollow);
+        ivRound.setImageResource(originalImageResource);
+        UIUtils.delayedVisibility(layoutTitle, layoutFollow, ivInfo);
     }
 
+    /**
+     * Handles shared text from an intent and logs it to Firebase Analytics.
+     */
     private void handleSharedIntent() {
         shareIntentText = IntentUtils.extractSharedText(getIntent());
         if (shareIntentText != null) {
-            FirebaseUtils.logEvent(firebaseAnalytics, "shared_intent", "Shared Intent");
             handleActionDown();
         }
     }
 
+    /**
+     * Sets up the touch listener for the round button.
+     */
     private void setupTouchListener() {
-        iv_round.setOnTouchListener((v, event) -> {
+        ivRound.setOnTouchListener((v, event) -> {
             if (!downloadFroze) {
                 switch (event.getAction()) {
                     case MotionEvent.ACTION_DOWN:
@@ -104,29 +106,61 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * Handles the "Action Down" event, checking permissions and starting the action.
+     */
     private void handleActionDown() {
-        tv_wait.setText("Processing...");
-        tv_wait.setVisibility(View.GONE);
-        iv_round.setImageResource(hoverImageResource);
-        AnimationUtils.scaleImageView(iv_round, R.dimen.image_original_width, -20);
+        if (PermissionUtils.isPostNotificationsPermissionGranted(this)) {
+            startAction();
+        } else {
+            ActivityCompat.requestPermissions(this,
+                    new String[]{android.Manifest.permission.POST_NOTIFICATIONS}, PERMISSION_REQUEST_CODE);
+        }
+    }
+
+    /**
+     * The main logic for the "Action Down" event.
+     */
+    private void startAction() {
+        tvWait.setVisibility(View.GONE);
+        ivRound.setImageResource(hoverImageResource);
+        AnimationUtils.scaleImageView(ivRound, R.dimen.image_original_width, -20);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             checkForUpdate();
         }
     }
 
-    private void handleActionUp() {
-        iv_round.setImageResource(originalImageResource);
-        AnimationUtils.scaleImageView(iv_round, R.dimen.image_original_width, +20);
+    /**
+     * Handles permission request results.
+     */
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (PermissionUtils.isPostNotificationsPermissionGranted(this)) {
+            startAction();
+        } else {
+            Toast.makeText(this, "Please Provide Notification Permission", Toast.LENGTH_SHORT).show();
+        }
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.O)
+    /**
+     * Handles the "Action Up" event, resetting the button state.
+     */
+    private void handleActionUp() {
+        ivRound.setImageResource(originalImageResource);
+        AnimationUtils.scaleImageView(ivRound, R.dimen.image_original_width, +20);
+    }
+
+    /**
+     * Checks for app updates using Firebase and starts the download if up-to-date.
+     */
     private void checkForUpdate() {
         FirebaseUtils.getAppVersion(FirebaseDatabase.getInstance().getReference("app_version"),
                 new FirebaseUtils.FirebaseCallback() {
                     @Override
                     public void onSuccess(String latestVersion) {
-                        if (VersionUtils.isVersionOutdated(MainActivity.this, latestVersion)) {
-                            DialogUtils.showUpdateDialog(MainActivity.this, latestVersion);
+                        if (AppUtils.isVersionOutdated(MainActivity.this, latestVersion)) {
+                            DialogUtils.showUpdateDialog(MainActivity.this);
                         } else {
                             startDownload();
                         }
@@ -139,47 +173,39 @@ public class MainActivity extends AppCompatActivity {
                 });
     }
 
-    void startDownload() {
-        FirebaseUtils.logEvent(firebaseAnalytics, "fetch_video", "Fetch Video");
+    /**
+     * Starts the video download process.
+     */
+    private void startDownload() {
         downloadFroze = true;
-        VideoUtils.fetchVideoData(this, progressBar, tv_wait, shareIntentText);
+        VideoUtils.fetchVideoData(this, progressBar, tvWait, shareIntentText);
     }
 
     public void github(View view) {
         // use url from resource string
-        openUrl(getString(R.string.github_com));
-    }
-
-    public void openUrl(String url) {
-        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
-        startActivity(intent);
+        openUrlInBrowser(this,getString(R.string.github_com));
     }
 
     public void twitter(View view) {
-        openUrl(getString(R.string.x_com));
+        openUrlInBrowser(this,getString(R.string.x_com));
     }
 
     public void coffee(View view) {
-        openUrl(getString(R.string.buymeacoffee_com));
+        openUrlInBrowser(this,getString(R.string.buymeacoffee_com));
     }
 
-    public void getInfo(View view) {
-        supported_platform_dialog();
-    }
 
-    public void supported_platform_dialog(){
+    public void showInfoDialog(View view) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        View dialogView = LayoutInflater.from(this).inflate(R.layout.dialog_platform, null);
-
+        View dialogView = getLayoutInflater().inflate(R.layout.dialog_platform, null);
         builder.setView(dialogView);
         AlertDialog dialog = builder.create();
 
         dialogView.findViewById(R.id.dialog_request_button).setOnClickListener(v -> {
-            openUrl(getString(R.string.platform_request_form));
-            dialog.dismiss(); // Dismiss the dialog
+            openUrlInBrowser(this,getString(R.string.platform_request_form));
+            dialog.dismiss();
         });
 
         dialog.show();
-
     }
 }

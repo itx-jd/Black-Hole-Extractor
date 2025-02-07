@@ -4,7 +4,7 @@ import android.os.AsyncTask;
 
 import com.blackhole.downloader.R;
 import com.blackhole.downloader.callback.Callback;
-import com.blackhole.downloader.constants.BlackHoleApp;
+import com.blackhole.downloader.helper.BlackHoleApp;
 
 import org.json.JSONArray;
 import org.json.JSONException;

@@ -1,10 +1,8 @@
 package com.blackhole.downloader.utils;
 
-import static com.blackhole.downloader.constants.Constant.isURlValid;
-
-import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.TextView;
@@ -14,20 +12,17 @@ import androidx.appcompat.app.AlertDialog;
 
 import com.blackhole.downloader.R;
 import com.blackhole.downloader.callback.Callback;
-import com.blackhole.downloader.constants.Constant;
 import com.blackhole.downloader.detector.PlatformDetector;
 import com.blackhole.downloader.fetcher.VideoDataFetcher;
 import com.blackhole.downloader.fetcher.VideoDataFetcherFactory;
 import com.blackhole.downloader.ui.MainActivity;
-import com.google.android.material.button.MaterialButton;
-import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.progressindicator.LinearProgressIndicator;
 
 public class VideoUtils {
 
     public static void fetchVideoData(Context context, LinearProgressIndicator progressBar, TextView tvWait, String url) {
          // when user use send intent we use intent url
-        if (isURlValid(url)) {
+        if (DownloadUtils.isURLValid(url)) {
             processVideoUrl(context, progressBar, tvWait, url);
         } else if (url.isEmpty()) {
             // when user press button from home screen we use Clipboard url
@@ -70,50 +65,29 @@ public class VideoUtils {
 
         tvWait.setVisibility(View.VISIBLE);
         String platformName = PlatformDetector.getPlatformName(url);
-        Toast.makeText(context, "BlackHole Pasted From " + platformName, Toast.LENGTH_SHORT).show();
+        Toast.makeText(context, "BlackHole pasted from " + platformName, Toast.LENGTH_SHORT).show();
 
         VideoDataFetcher fetcher = VideoDataFetcherFactory.getFetcher(platformName);
         fetcher.fetchVideoData(url, new Callback() {
             @Override
             public void onResult(String[] result) {
-                handleFetchResult(context, progressBar, tvWait, result);
+                handleFetchResult(context, progressBar, tvWait, result,url);
             }
         });
     }
 
-    private static void handleFetchResult(Context context, LinearProgressIndicator progressBar, TextView tvWait, String[] result) {
+    private static void handleFetchResult(Context context, LinearProgressIndicator progressBar, TextView tvWait, String[] result,String url) {
         if (result[0].startsWith("Error")) {
-            Toast.makeText(context, result[0], Toast.LENGTH_SHORT).show();
-            showFailedDialog(context);
+            Log.e("VideoUtils", "Error fetching video data: " + result[0]);
+            Toast.makeText(context, "Failed To Fetch Download Link", Toast.LENGTH_SHORT).show();
+            FirebaseUtils.reportUrlToFirebase(context,url);
+            DialogUtils.showFailedDialog(context);
             tvWait.setText("Download Failed");
             MainActivity.downloadFroze = false;
         } else {
             progressBar.setVisibility(View.VISIBLE);
-            Constant.downloadFileFromURL(context, result[0], result[1], progressBar, tvWait);
+            DownloadUtils.downloadFileFromURL(context, result[0], result[1], progressBar, tvWait);
         }
-    }
-
-    public static void showFailedDialog(Context context) {
-
-        AlertDialog.Builder builder = new AlertDialog.Builder(context);
-        View dialogView = LayoutInflater.from(context).inflate(R.layout.dialog_failed, null);
-        builder.setView(dialogView).setCancelable(false);
-        AlertDialog dialog = builder.create();
-
-        dialogView.findViewById(R.id.dialog_update_button).setOnClickListener(v -> {
-            restartApp(context);
-            dialog.dismiss();
-        });
-        dialog.show();
-    }
-
-    private static void restartApp(Context context) {
-        // Intent to restart the activity
-        Intent intent = new Intent(context, MainActivity.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);  // Clear activity stack
-        context.startActivity(intent);
-        // Kill the current process
-        android.os.Process.killProcess(android.os.Process.myPid());
     }
 
 }

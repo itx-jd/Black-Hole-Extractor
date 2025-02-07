@@ -10,13 +10,15 @@
     android:background="@drawable/background">
 
    <ImageView
+       android:id="@+id/iv_info"
        android:layout_width="wrap_content"
        android:layout_height="wrap_content"
        android:layout_marginTop="60dp"
        android:layout_marginLeft="20dp"
+       android:visibility="invisible"
        android:alpha="0.5"
       android:src="@drawable/info"
-       android:onClick="getInfo"/>
+       android:onClick="showInfoDialog"/>
 
    <LinearLayout
        android:id="@+id/layout_title"
@@ -24,7 +26,7 @@
        android:layout_height="wrap_content"
        android:gravity="center"
        android:orientation="vertical"
-       android:visibility="visible"
+       android:visibility="invisible"
        android:layout_centerHorizontal="true"
        android:layout_marginTop="80dp">
 

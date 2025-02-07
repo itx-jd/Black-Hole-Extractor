@@ -11,7 +11,7 @@
      `app_version: "1.0"`
 
 3. **Firebase Rules**  
-   - Set the Firebase rules to allow read access. Ensure the rules are configured appropriately to permit the required data access.
+   - Set the Firebase rules to allow read write access. Ensure the rules are configured appropriately to permit the required data access.
 
 4. **Troubleshooting**  
    - If you encounter any issues during the Firebase setup, please refer to the provided screenshots for guidance.
