@@ -2,14 +2,14 @@
 
 **BlackHole++** is your go-to app for quick audio/video downloads from 40+ platforms, including **Facebook**, **Twitter**, and **TikTok**. Simple, clean, and junk-free, it lets you save videos to your gallery with just **one click**!
 
-[![Github All Releases](assets/btn_download.png)](https://github.com/itx-jd/Black-Hole/blob/main/latest/BlackHole%2B%2B_v1.0.apk?raw=true)
+[![Github All Releases](assets/btn_download.png)](https://github.com/itx-jd/Black-Hole-Extractor/blob/main/latest/BlackHole%2B%2B_v1.0.apk?raw=true)
 
 ---
 
 ## 📜 Supported Platforms
 
 BlackHole++ supports over 40+ platforms, including popular ones like **Facebook**, **Twitter**, **TikTok**, and many more. 
-For the full list of supported platforms, please check out the [Supported Sites](https://github.com/itx-jd/Black-Hole/blob/main/assets/supportedsites.md).
+For the full list of supported platforms, please check out the [Supported Sites](https://github.com/itx-jd/Black-Hole-Extractor/blob/main/assets/supportedsites.md).
 
 ---
 
