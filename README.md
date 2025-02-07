@@ -14,7 +14,9 @@ For the full list of supported platforms, please check out the [Supported Sites]
 ---
 
 ## ✨ Key Features  
-- **Support for 40+ Platforms:** From social media to other websites, we’ve got you covered.  
+- **Support for 40+ Platforms:** From social media to other websites, we’ve got you covered.
+- **Lightweight & Fast:** Just **9MB in size**, ensuring smooth performance without hogging storage.  
+- **Ad-Free Experience:** No annoying ads—just uninterrupted downloading! 🚀  
 - **Clean UI:** No bloat, no distractions—just pure functionality.  
 - **Copy-Paste Simplicity:** Copy the video link, open the app, hit the round download button, and voilà—your video is downloading!  
 - **Share-to-Download:** Hit the **share button** on any platform, select BlackHole++, and it’ll automatically detect the link and start downloading.  
