@@ -4,12 +4,12 @@ plugins {
 }
 
 android {
-    namespace 'com.blackhole.downloader'
+    namespace 'com.blackhole.downloaders'
     compileSdk 34
 
     defaultConfig {
-        applicationId "com.blackhole.downloader"
-        minSdk 24
+        applicationId "com.blackhole.downloaders"
+        minSdk 26
         targetSdk 34
         versionCode 1
         versionName "1.0"

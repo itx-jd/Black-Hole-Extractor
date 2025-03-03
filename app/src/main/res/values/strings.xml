@@ -5,10 +5,7 @@
     <string name="social_download_all_in_one_key">YOUR_API_KEY_HERE</string>
 
 <!--    Grab api key using this link 'https://rapidapi.com/ugoBoy/api/youtube-video-and-shorts-downloader1' -->
-    <string name="youtube_video_and_shorts_downloader">84a872a76emshb40453cf5a2ddc5p121d92jsn1b2a14c83b28</string>
-
-<!--    This is the url of the latest apk file-->
-    <string name="latest_apk_url">https://github.com/itx-jd/Black-Hole/raw/main/latest/BlackHole%2B%2B_v</string>
+    <string name="youtube_video_and_shorts_downloader">YOUR_API_KEY_HERE</string>
 
 <!--    Supported Platform Dialog-->
     <string name="platform_request_form">https://docs.google.com/forms/d/e/1FAIpQLSf8tR8j-eLGgoPWeVIX61gjcnTQNvPG0NLDgpTQ43eM3xNTgg/viewform?usp=header</string>
