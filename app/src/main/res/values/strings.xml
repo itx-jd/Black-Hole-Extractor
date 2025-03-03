@@ -6,7 +6,7 @@
 
 <!--    Grab api key using this link 'https://rapidapi.com/ugoBoy/api/youtube-video-and-shorts-downloader1' -->
     <string name="youtube_video_and_shorts_downloader">YOUR_API_KEY_HERE</string>
-
+    
 <!--    Supported Platform Dialog-->
     <string name="platform_request_form">https://docs.google.com/forms/d/e/1FAIpQLSf8tR8j-eLGgoPWeVIX61gjcnTQNvPG0NLDgpTQ43eM3xNTgg/viewform?usp=header</string>
     <string name="supported_platform">Bandcamp, Bilibili, Bitchute, Capcut, Dailymotion, Douyin, Espn, Febspot, Facebook, Getstickerpack, Hipi, Imgur, Instagram, Ixigua, iFunny, Izlesene, Linkedin, Likee, Miaopai, Meipai, Mixcloud, National Video, Pinterest, Rumble, Reddit, Sharechat, Sina, Soundcloud, Spotify, SohuTv, Ted, Telegram, Threads, Tumblr, Twitter, Vimeo, Weibo, Xiaohongshu, Xiaoying, Youtube Shorts (Beta), Zingmp3</string>
