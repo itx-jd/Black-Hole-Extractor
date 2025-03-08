@@ -4,6 +4,8 @@
 
 [![Github All Releases](assets/btn_download.png)](https://github.com/itx-jd/Black-Hole-Extractor/releases/download/1.2/BlackHole++v1.2.apk)
 
+[![Github All Releases](assets/btn_telegram.png)](https://t.me/blackholeextractor)
+
 ---
 
 ## 📜 Supported Platforms
