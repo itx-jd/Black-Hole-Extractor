@@ -9,11 +9,11 @@
 /.idea/navEditor.xml
 /.idea/assetWizardSettings.xml
 .DS_Store
-/build
 /captures
 .externalNativeBuild
 .cxx
 local.properties
+
 # Keystore files
 *.jks
 *.keystore
@@ -21,7 +21,8 @@ local.properties
 # Firebase config file
 app/google-services.json
 
-# Release-specific folder (if not already covered by /build)
+# Release-specific
+app/build/
 app/release/
 
 # String resources
