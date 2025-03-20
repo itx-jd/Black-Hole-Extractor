@@ -14,8 +14,6 @@
 .externalNativeBuild
 .cxx
 local.properties
-
-# Added ignores from your request
 # Keystore files
 *.jks
 *.keystore
