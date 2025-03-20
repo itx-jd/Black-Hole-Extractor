@@ -19,11 +19,10 @@ local.properties
 *.keystore
 
 # Firebase config file
-google-services.json
+app/google-services.json
 
-# Release and build output files
-*.aab
-*.apk
+# Release-specific folder (if not already covered by /build)
+app/release/
 
 # String resources
 app/src/main/res/values/strings.xml
