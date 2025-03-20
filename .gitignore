@@ -1,3 +1,4 @@
+# Existing Android/Java ignores
 *.iml
 .gradle
 /local.properties
@@ -13,3 +14,18 @@
 .externalNativeBuild
 .cxx
 local.properties
+
+# Added ignores from your request
+# Keystore files
+*.jks
+*.keystore
+
+# Firebase config file
+google-services.json
+
+# Release and build output files
+*.aab
+*.apk
+
+# String resources
+app/src/main/res/values/strings.xml
