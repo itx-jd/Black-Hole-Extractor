@@ -1,19 +1,20 @@
 <resources>
     <string name="app_name">BlackHole ++</string>
 
-<!--    Grab api key using this link 'https://rapidapi.com/nguyenmanhict-MuTUtGWD7K/api/social-download-all-in-one' -->
-    <string name="social_download_all_in_one_key">YOUR_API_KEY_HERE</string>
+<!--    Push Notification-->
+    <string name="one_signal_app_id">8876791c-de10-428d-b95a-fd9dbe8ac0a7</string>
 
-<!--    Grab api key using this link 'https://rapidapi.com/ugoBoy/api/youtube-video-and-shorts-downloader1' -->
-    <string name="youtube_video_and_shorts_downloader">YOUR_API_KEY_HERE</string>
-    
 <!--    Supported Platform Dialog-->
     <string name="platform_request_form">https://docs.google.com/forms/d/e/1FAIpQLSf8tR8j-eLGgoPWeVIX61gjcnTQNvPG0NLDgpTQ43eM3xNTgg/viewform?usp=header</string>
-    <string name="supported_platform">Bandcamp, Bilibili, Bitchute, Capcut, Dailymotion, Douyin, Espn, Febspot, Facebook, Getstickerpack, Hipi, Imgur, Instagram, Ixigua, iFunny, Izlesene, Linkedin, Likee, Miaopai, Meipai, Mixcloud, National Video, Pinterest, Rumble, Reddit, Sharechat, Sina, Soundcloud, Spotify, SohuTv, Ted, Telegram, Threads, Tumblr, Twitter, Vimeo, Weibo, Xiaohongshu, Xiaoying, Youtube Shorts (Beta), Zingmp3</string>
+    <string name="supported_platform">Facebook, Instagram, Twitter(X), Linkedin, Threads, Terabox, Pinterest, Reddit, Tumblr, Telegram, Youtube Shorts (Beta), Vimeo, Dailymotion, Espn, Soundcloud, Spotify, Ted, Capcut, Getstickerpack, Mixcloud, Rumble, Bitchute, iFunny, Sharechat, Imgur, Zingmp3, Febspot, National Video, Izlesene, Hipi, Douyin, Weibo, Xiaohongshu, Xiaoying, Miaopai, Meipai, Sina, SohuTv, Ixigua, Bilibili</string>
 
 <!--    Social Media Links-->
     <string name="x.com">https://x.com/@itx_jdd</string>
     <string name="github.com">https://github.com/itx-jd/Black-Hole</string>
     <string name="buymeacoffee.com">https://buymeacoffee.com/jadi</string>
+    <string name="telegram.com">https://t.me/blackholeextractor</string>
+
+<!--    Start.io App ID-->
+    <string name="startapp_app_id">202693600</string>
 
 </resources>

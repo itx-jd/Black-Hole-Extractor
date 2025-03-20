@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
@@ -24,6 +25,7 @@ import com.blackhole.downloaders.R;
 import com.blackhole.downloaders.utils.AnimationUtils;
 import com.blackhole.downloaders.utils.AppUtils;
 import com.blackhole.downloaders.utils.DialogUtils;
+import com.blackhole.downloaders.utils.FirebaseApiManager;
 import com.blackhole.downloaders.utils.FirebaseUtils;
 import com.blackhole.downloaders.utils.IntentUtils;
 import com.blackhole.downloaders.utils.PermissionUtils;
@@ -32,6 +34,12 @@ import com.blackhole.downloaders.utils.VideoUtils;
 import com.google.android.material.progressindicator.LinearProgressIndicator;
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.database.FirebaseDatabase;
+import com.onesignal.OneSignal;
+import com.startapp.sdk.adsbase.Ad;
+import com.startapp.sdk.adsbase.StartAppAd;
+import com.startapp.sdk.adsbase.StartAppSDK;
+import com.startapp.sdk.adsbase.adlisteners.AdDisplayListener;
+import com.startapp.sdk.adsbase.adlisteners.AdEventListener;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -45,9 +53,14 @@ public class MainActivity extends AppCompatActivity {
 
     private String shareIntentText = "";
     private FirebaseAnalytics firebaseAnalytics;
+    private FirebaseApiManager firebaseApiManager;
 
     private static final int PERMISSION_REQUEST_CODE = 123;
     public static boolean downloadFroze = false;
+
+    private StartAppAd startAppAd ;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,7 +68,20 @@ public class MainActivity extends AppCompatActivity {
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
         setContentView(R.layout.activity_main);
 
+        // OneSignal Initialization
+        OneSignal.initWithContext(this);
+        OneSignal.setAppId(getString(R.string.one_signal_app_id));
+
+        startAppAd = new StartAppAd(this);
+        // comment below line to disable test ads
+//        StartAppSDK.setTestAdsEnabled(true);
+        startAppAd.loadAd();
+
         firebaseAnalytics = FirebaseAnalytics.getInstance(this);
+        firebaseApiManager = FirebaseApiManager.getInstance();
+
+        // Load API keys when app starts
+        loadApiKeys();
 
         initializeUI();
         handleSharedIntent();
@@ -73,6 +99,22 @@ public class MainActivity extends AppCompatActivity {
 
         ivRound.setImageResource(originalImageResource);
         UIUtils.delayedVisibility(layoutTitle, layoutFollow, ivInfo);
+    }
+
+    private void loadApiKeys() {
+        firebaseApiManager.fetchApiKeys(new FirebaseApiManager.ApiKeyCallback() {
+            @Override
+            public void onApiKeysLoaded(String rapid_api,String terabox_api) {
+                Log.d("MainActivity", "API keys loaded successfully");
+            }
+
+            @Override
+            public void onError(String error) {
+                Toast.makeText(MainActivity.this,
+                        "Failed to load API keys: " + error,
+                        Toast.LENGTH_LONG).show();
+            }
+        });
     }
 
     private void handleSharedIntent() {
@@ -116,6 +158,9 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void handleActionDown() {
+
+        tvWait.setText("Please wait...");
+
         if (PermissionUtils.hasRequiredPermissions(this)) {
             startAction();
         } else {
@@ -127,7 +172,13 @@ public class MainActivity extends AppCompatActivity {
         tvWait.setVisibility(View.GONE);
         ivRound.setImageResource(hoverImageResource);
         AnimationUtils.scaleImageView(ivRound, R.dimen.image_original_width, -20);
-        checkForUpdate();
+
+        if(AppUtils.isInternetAvailable()){
+            checkForUpdate();
+        }else{
+            Toast.makeText(this, "No internet connection", Toast.LENGTH_LONG).show();
+        }
+
     }
 
     @Override
@@ -167,8 +218,33 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void startDownload() {
-        downloadFroze = true;
-        VideoUtils.fetchVideoData(this, progressBar, tvWait, shareIntentText);
+
+        startAppAd.showAd(new AdDisplayListener() {
+            @Override
+            public void adHidden(Ad ad) {
+                startAppAd.loadAd();
+                downloadFroze = true;
+                VideoUtils.fetchVideoData(MainActivity.this, progressBar, tvWait, shareIntentText);
+            }
+
+            @Override
+            public void adDisplayed(Ad ad) {
+
+
+            }
+
+            @Override
+            public void adClicked(Ad ad) {
+
+            }
+
+            @Override
+            public void adNotDisplayed(Ad ad) {
+                downloadFroze = true;
+                VideoUtils.fetchVideoData(MainActivity.this, progressBar, tvWait, shareIntentText);
+            }
+        });
+
     }
 
     public void github(View view) {
@@ -179,8 +255,8 @@ public class MainActivity extends AppCompatActivity {
         openUrlInBrowser(this, getString(R.string.x_com));
     }
 
-    public void coffee(View view) {
-        openUrlInBrowser(this, getString(R.string.buymeacoffee_com));
+    public void telegram(View view) {
+        openUrlInBrowser(this, getString(R.string.telegram_com));
     }
 
     public void showInfoDialog(View view) {
@@ -202,5 +278,11 @@ public class MainActivity extends AppCompatActivity {
         super.onNewIntent(intent);
         setIntent(intent);
         handleSharedIntent();
+    }
+
+    @Override
+    public void onBackPressed() {
+        startAppAd.onBackPressed();
+        super.onBackPressed();
     }
 }

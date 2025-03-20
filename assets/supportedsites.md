@@ -1,42 +1,42 @@
 ## Supported Sites
 
-- **9GAG**
-- **Bandcamp**
-- **Bitchute**
-- **Capcut**
-- **Douyin**
-- **Dailymotion**
-- **Espn**
-- **Febspot**
 - **Facebook**
-- **Getstickerpack**
-- **Hipi**
-- **Imgur**
-- **Ifunny**
 - **Instagram**
-- **Izlesene**
+- **Twitter(X)**
 - **Linkedin**
-- **Likee**
-- **Miaopai**
-- **Meipai**
-- **Mixcloud**
-- **National Video**
-- **Oke.ru**
+- **Threads**
+- **Terabox**
 - **Pinterest**
 - **Reddit**
-- **Rumble**
-- **Sharechat**
-- **Sina**
+- **Tumblr**
+- **Telegram**
+- **Youtube Shorts (Beta)**
+- **Vimeo**
+- **Dailymotion**
+- **Espn**
 - **Soundcloud**
 - **Spotify**
-- **SohuTv**
 - **Ted**
-- **Tiktok**
-- **Tumblr**
-- **Twitter**
-- **Vimeo**
+- **Capcut**
+- **Getstickerpack**
+- **Mixcloud**
+- **Rumble**
+- **Bitchute**
+- **iFunny**
+- **Sharechat**
+- **Imgur**
+- **Zingmp3**
+- **Febspot**
+- **National Video**
+- **Izlesene**
+- **Hipi**
+- **Douyin**
 - **Weibo**
 - **Xiaohongshu**
-- **Yingke**
-- **Youtube Shorts (Beta)**
-- **Zingmp3**
+- **Xiaoying**
+- **Miaopai**
+- **Meipai**
+- **Sina**
+- **SohuTv**
+- **Ixigua**
+- **Bilibili**

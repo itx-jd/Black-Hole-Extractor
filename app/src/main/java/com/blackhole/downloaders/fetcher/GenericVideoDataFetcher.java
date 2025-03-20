@@ -2,9 +2,10 @@ package com.blackhole.downloaders.fetcher;
 
 import android.os.AsyncTask;
 
-import com.blackhole.downloaders.R;
 import com.blackhole.downloaders.callback.Callback;
 import com.blackhole.downloaders.helper.BlackHoleApp;
+import com.blackhole.downloaders.model.DownloadItem;
+import com.blackhole.downloaders.utils.FirebaseApiManager;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -24,18 +25,19 @@ public class GenericVideoDataFetcher implements VideoDataFetcher {
         new FetchVideoDataTask(callback).execute(url);
     }
 
-    private static class FetchVideoDataTask extends AsyncTask<String, Void, String[]> {
+    private static class FetchVideoDataTask extends AsyncTask<String, Void, DownloadItem> {
         private Callback callback;
+        private FirebaseApiManager firebaseApiManager = FirebaseApiManager.getInstance();
 
         FetchVideoDataTask(Callback callback) {
             this.callback = callback;
         }
 
         @Override
-        protected String[] doInBackground(String... params) {
+        protected DownloadItem doInBackground(String... params) {
             String clipboardText = params[0];
             String apiUrl = "https://social-download-all-in-one.p.rapidapi.com/v1/social/autolink";
-            String apiKey = BlackHoleApp.getContext().getString(R.string.social_download_all_in_one_key);
+            String apiKey = firebaseApiManager.getRapidApiKey();
 
             OkHttpClient client = new OkHttpClient();
             MediaType mediaType = MediaType.parse("application/json");
@@ -55,44 +57,57 @@ public class GenericVideoDataFetcher implements VideoDataFetcher {
             try (Response response = client.newCall(request).execute()) {
                 if (response.isSuccessful()) {
                     String responseBody = response.body().string();
-                    return parseVideoUrlAndTitleFromResponse(responseBody);
+                    return parseVideoDataFromResponse(responseBody);
                 } else {
-                    return new String[] {"Error: " + response.message(), "Error: No title found"};
+                    DownloadItem item = new DownloadItem();
+                    item.setName("Error: " + response.message());
+                    item.setUrl("Error: Request failed");
+                    return item;
                 }
             } catch (IOException e) {
                 e.printStackTrace();
-                return new String[] {"Exception: " + e.getMessage(), "Error: No title found"};
+                DownloadItem item = new DownloadItem();
+                item.setName("Exception: " + e.getMessage());
+                item.setUrl("Error: Network failure");
+                return item;
             }
         }
 
         @Override
-        protected void onPostExecute(String[] result) {
-            callback.onResult(result);
+        protected void onPostExecute(DownloadItem item) {
+            callback.onResult(item);
         }
 
-        private String[] parseVideoUrlAndTitleFromResponse(String responseBody) {
-            String[] result = new String[2];
+        private DownloadItem parseVideoDataFromResponse(String responseBody) {
+
+            DownloadItem item = new DownloadItem();
+
             try {
                 JSONObject jsonObject = new JSONObject(responseBody);
                 JSONArray medias = jsonObject.getJSONArray("medias");
 
-                // Extract URL
+                // Extract data if medias array has items
                 if (medias.length() > 0) {
                     JSONObject media = medias.getJSONObject(0);
-                    result[0] = media.getString("url");
+                    item.setUrl(media.getString("url"));
+                    item.setFile_extension(media.getString("extension"));
                 } else {
-                    result[0] = "Error: No video URL found";
+                    item.setUrl("Error: No video URL found");
+                    item.setFile_extension("unknown");
                 }
 
-                // Extract Title
-                result[1] = jsonObject.optString("title", "Error: No title found");
+                // Set name (title) and source
+                item.setName(jsonObject.optString("title", "Error: No title found"));
+                item.setSource(jsonObject.optString("source", "unknown"));
 
             } catch (JSONException e) {
                 e.printStackTrace();
-                result[0] = "Error: JSON parsing failed";
-                result[1] = "Error: JSON parsing failed";
+                item.setName("Error: JSON parsing failed");
+                item.setUrl("Error: JSON parsing failed");
+                item.setFile_extension("unknown");
+                item.setSource("unknown");
             }
-            return result;
+            return item;
         }
     }
 }

@@ -132,7 +132,11 @@ public class PlatformDetector {
             return "Kuaishou";
         } else if(url.contains("toutiao")) {
             return "Toutiao";
-        } else {
+        } else if(url.contains("tera")){
+            return "Terabox";
+        } else if(url.contains("threads")){
+            return "Threads";
+        }else {
             return "Unknown";
         }
 

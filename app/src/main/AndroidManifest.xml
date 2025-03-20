@@ -8,6 +8,8 @@
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"
         android:maxSdkVersion="32" /> <!-- Optional, for reading if needed -->
 
+    <uses-permission android:name="android.permission.AD_ID" />
+
     <application
         android:name="com.blackhole.downloaders.helper.BlackHoleApp"
         android:allowBackup="true"
@@ -43,6 +45,10 @@
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/file_paths" />
         </provider>
+
+        <meta-data
+            android:name="com.startapp.sdk.APPLICATION_ID"
+            android:value="startapp_app_id" />
 
     </application>
 </manifest>

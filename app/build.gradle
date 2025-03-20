@@ -11,8 +11,8 @@ android {
         applicationId "com.blackhole.downloaders"
         minSdk 26
         targetSdk 34
-        versionCode 1
-        versionName "1.0"
+        versionCode 5
+        versionName "1.4"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -41,4 +41,6 @@ dependencies {
     implementation 'com.getbase:floatingactionbutton:1.10.1'
     implementation 'com.squareup.okhttp3:okhttp:4.12.0'
     implementation 'com.google.firebase:firebase-analytics:22.2.0'
+    implementation 'com.onesignal:OneSignal:[4.0.0, 4.99.99]'
+    implementation 'com.startapp:inapp-sdk:5.+'
 }
