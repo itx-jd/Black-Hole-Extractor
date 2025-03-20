@@ -1,6 +1,7 @@
 # Existing Android/Java ignores
 *.iml
 .gradle
+.idea
 /local.properties
 /.idea/caches
 /.idea/libraries
