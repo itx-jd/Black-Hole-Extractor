@@ -18,6 +18,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.SingleTap"
+        android:hardwareAccelerated="true"
         android:requestLegacyExternalStorage="true"
         tools:targetApi="34">
 
@@ -45,10 +46,6 @@
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/file_paths" />
         </provider>
-
-        <meta-data
-            android:name="com.startapp.sdk.APPLICATION_ID"
-            android:value="startapp_app_id" />
 
     </application>
 </manifest>

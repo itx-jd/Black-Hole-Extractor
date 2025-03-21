@@ -4,7 +4,6 @@ import static com.blackhole.downloaders.utils.IntentUtils.openUrlInBrowser;
 
 import android.Manifest;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
@@ -31,15 +30,18 @@ import com.blackhole.downloaders.utils.IntentUtils;
 import com.blackhole.downloaders.utils.PermissionUtils;
 import com.blackhole.downloaders.utils.UIUtils;
 import com.blackhole.downloaders.utils.VideoUtils;
+import com.facebook.ads.Ad;
+import com.facebook.ads.AdError;
+import com.facebook.ads.AdSize;
+import com.facebook.ads.AdView;
+import com.facebook.ads.AudienceNetworkAds;
+
+import com.facebook.ads.InterstitialAd;
+import com.facebook.ads.InterstitialAdListener;
 import com.google.android.material.progressindicator.LinearProgressIndicator;
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.database.FirebaseDatabase;
 import com.onesignal.OneSignal;
-import com.startapp.sdk.adsbase.Ad;
-import com.startapp.sdk.adsbase.StartAppAd;
-import com.startapp.sdk.adsbase.StartAppSDK;
-import com.startapp.sdk.adsbase.adlisteners.AdDisplayListener;
-import com.startapp.sdk.adsbase.adlisteners.AdEventListener;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -58,8 +60,8 @@ public class MainActivity extends AppCompatActivity {
     private static final int PERMISSION_REQUEST_CODE = 123;
     public static boolean downloadFroze = false;
 
-    private StartAppAd startAppAd ;
-
+    private InterstitialAd interstitialAd;
+    private AdView adView;
 
 
     @Override
@@ -72,10 +74,10 @@ public class MainActivity extends AppCompatActivity {
         OneSignal.initWithContext(this);
         OneSignal.setAppId(getString(R.string.one_signal_app_id));
 
-        startAppAd = new StartAppAd(this);
-        // comment below line to disable test ads
-//        StartAppSDK.setTestAdsEnabled(true);
-        startAppAd.loadAd();
+        // Initialize the Audience Network SDK
+        AudienceNetworkAds.initialize(this);
+        loadBannerAd();
+        loadInterstitialAd();
 
         firebaseAnalytics = FirebaseAnalytics.getInstance(this);
         firebaseApiManager = FirebaseApiManager.getInstance();
@@ -206,45 +208,78 @@ public class MainActivity extends AppCompatActivity {
                         if (AppUtils.isVersionOutdated(MainActivity.this, latestVersion)) {
                             DialogUtils.showUpdateDialog(MainActivity.this);
                         } else {
-                            startDownload();
+                            preStartDownload();
                         }
                     }
 
                     @Override
                     public void onFailure(Exception e) {
-                        startDownload();
+                        preStartDownload();
                     }
                 });
     }
 
-    private void startDownload() {
+    private void preStartDownload() {
 
-        startAppAd.showAd(new AdDisplayListener() {
+        if(interstitialAd.isAdLoaded()){
+            interstitialAd.show();
+        }else{
+            startDownload();
+        }
+    }
+
+    void startDownload(){
+        downloadFroze = true;
+        VideoUtils.fetchVideoData(MainActivity.this, progressBar, tvWait, shareIntentText);
+    }
+
+    void loadBannerAd(){
+        adView = new AdView(this, getString(R.string.fb_banner_ad), AdSize.BANNER_HEIGHT_50);
+        LinearLayout adContainer = (LinearLayout) findViewById(R.id.banner_container);
+        adContainer.addView(adView);
+        adView.loadAd();
+    }
+
+    void loadInterstitialAd() {
+
+        interstitialAd = new InterstitialAd(this, getString(R.string.fb_interstitial_ad));
+        InterstitialAdListener interstitialAdListener = new InterstitialAdListener() {
             @Override
-            public void adHidden(Ad ad) {
-                startAppAd.loadAd();
-                downloadFroze = true;
-                VideoUtils.fetchVideoData(MainActivity.this, progressBar, tvWait, shareIntentText);
+            public void onInterstitialDisplayed(Ad ad) {
+
             }
 
             @Override
-            public void adDisplayed(Ad ad) {
+            public void onInterstitialDismissed(Ad ad) {
+                startDownload();
+                loadInterstitialAd();
+            }
 
+            @Override
+            public void onError(Ad ad, AdError adError) {
+                loadInterstitialAd();
+            }
+
+            @Override
+            public void onAdLoaded(Ad ad) {
 
             }
 
             @Override
-            public void adClicked(Ad ad) {
+            public void onAdClicked(Ad ad) {
 
             }
 
             @Override
-            public void adNotDisplayed(Ad ad) {
-                downloadFroze = true;
-                VideoUtils.fetchVideoData(MainActivity.this, progressBar, tvWait, shareIntentText);
-            }
-        });
+            public void onLoggingImpression(Ad ad) {
 
+            }
+        };
+
+        interstitialAd.loadAd(
+                interstitialAd.buildLoadAdConfig()
+                        .withAdListener(interstitialAdListener)
+                        .build());
     }
 
     public void github(View view) {
@@ -281,8 +316,15 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
+    protected void onDestroy() {
+        if (interstitialAd != null) {
+            interstitialAd.destroy();
+        }
+        super.onDestroy();
+    }
+
+    @Override
     public void onBackPressed() {
-        startAppAd.onBackPressed();
         super.onBackPressed();
     }
 }

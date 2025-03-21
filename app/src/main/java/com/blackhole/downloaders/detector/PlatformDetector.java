@@ -10,13 +10,13 @@ public class PlatformDetector {
             return "Facebook";
         } else if (url.contains("instagram")) {
             return "Instagram";
-        } else if (url.contains("twitter") || url.contains("x.com")) {
+        } else if(url.contains("terabox")){
+            return "Terabox";
+        }else if (url.contains("twitter") || url.contains("x.com")) {
             return "X (Twitter)";
         } else if (url.contains("vimeo")) {
             return "Vimeo";
-        } else if (url.contains("dailymotion")) {
-            return "Dailymotion";
-        } else if (url.contains("tiktok")) {
+        }  else if (url.contains("tiktok")) {
             return "TikTok";
         } else if (url.contains("pinterest")) {
             return "Pinterest";
@@ -132,8 +132,6 @@ public class PlatformDetector {
             return "Kuaishou";
         } else if(url.contains("toutiao")) {
             return "Toutiao";
-        } else if(url.contains("tera")){
-            return "Terabox";
         } else if(url.contains("threads")){
             return "Threads";
         }else {
