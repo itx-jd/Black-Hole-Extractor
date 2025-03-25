@@ -18,45 +18,8 @@ import com.google.android.material.progressindicator.LinearProgressIndicator;
 public class VideoUtils {
 
     public static void fetchVideoData(Context context, LinearProgressIndicator progressBar, TextView tvWait, String url) {
-         // when user use send intent we use intent url
-        if (DownloadUtils.isURLValid(url)) {
-            processVideoUrl(context, progressBar, tvWait, url);
-        } else if (url.isEmpty()) {
-            // when user press button from home screen we use Clipboard url
-            handleEmptyUrl(context, progressBar, tvWait);
-        } else {
-            Toast.makeText(context, "Invalid Video Url", Toast.LENGTH_SHORT).show();
-            MainActivity.downloadFroze = false;
-        }
+        processVideoUrl(context, progressBar, tvWait, url);
     }
-    private static void handleEmptyUrl(Context context, LinearProgressIndicator progressBar, TextView tvWait) {
-        try {
-            // Get the clipboard text
-            String clipboardText = ClipboardUtils.getClipboardText(context);
-
-            // Check if the clipboard text is null or empty
-            if (clipboardText == null || clipboardText.isEmpty()) {
-                Toast.makeText(context, "Copy video link first", Toast.LENGTH_SHORT).show();
-                MainActivity.downloadFroze = false;
-                return;
-            }
-
-            // Check if the clipboard contains a valid URL
-            if (ClipboardUtils.isURLInClipboard(clipboardText)) {
-                processVideoUrl(context, progressBar, tvWait, clipboardText);
-            } else {
-                Toast.makeText(context, "Copy video link first", Toast.LENGTH_SHORT).show();
-                MainActivity.downloadFroze = false;
-            }
-
-        } catch (Exception e) {
-            // Catch any unexpected exceptions and log them
-            e.printStackTrace();
-            Toast.makeText(context, "Copy video link first", Toast.LENGTH_SHORT).show();
-            MainActivity.downloadFroze = false;
-        }
-    }
-
 
     private static void processVideoUrl(Context context, LinearProgressIndicator progressBar, TextView tvWait, String url) {
 

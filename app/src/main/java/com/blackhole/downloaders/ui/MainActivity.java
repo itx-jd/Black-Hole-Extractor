@@ -23,6 +23,7 @@ import androidx.core.app.ActivityCompat;
 import com.blackhole.downloaders.R;
 import com.blackhole.downloaders.utils.AnimationUtils;
 import com.blackhole.downloaders.utils.AppUtils;
+import com.blackhole.downloaders.utils.ClipboardUtils;
 import com.blackhole.downloaders.utils.DialogUtils;
 import com.blackhole.downloaders.utils.FirebaseApiManager;
 import com.blackhole.downloaders.utils.FirebaseUtils;
@@ -30,20 +31,19 @@ import com.blackhole.downloaders.utils.IntentUtils;
 import com.blackhole.downloaders.utils.PermissionUtils;
 import com.blackhole.downloaders.utils.UIUtils;
 import com.blackhole.downloaders.utils.VideoUtils;
-import com.facebook.ads.Ad;
-import com.facebook.ads.AdError;
-import com.facebook.ads.AdSize;
-import com.facebook.ads.AdView;
-import com.facebook.ads.AudienceNetworkAds;
-
-import com.facebook.ads.InterstitialAd;
-import com.facebook.ads.InterstitialAdListener;
 import com.google.android.material.progressindicator.LinearProgressIndicator;
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.database.FirebaseDatabase;
 import com.onesignal.OneSignal;
+import com.unity3d.ads.IUnityAdsInitializationListener;
+import com.unity3d.ads.IUnityAdsLoadListener;
+import com.unity3d.ads.IUnityAdsShowListener;
+import com.unity3d.ads.UnityAds;
+import com.unity3d.services.banners.BannerErrorInfo;
+import com.unity3d.services.banners.BannerView;
+import com.unity3d.services.banners.UnityBannerSize;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements IUnityAdsInitializationListener {
 
     private ImageView ivRound, ivInfo;
     private LinearProgressIndicator progressBar;
@@ -53,16 +53,13 @@ public class MainActivity extends AppCompatActivity {
     private int originalImageResource = R.drawable.bt_in_no_back;
     private int hoverImageResource = R.drawable.btn_no_back;
 
-    private String shareIntentText = "";
+    private String videoURL = "";
     private FirebaseAnalytics firebaseAnalytics;
     private FirebaseApiManager firebaseApiManager;
 
     private static final int PERMISSION_REQUEST_CODE = 123;
     public static boolean downloadFroze = false;
-
-    private InterstitialAd interstitialAd;
-    private AdView adView;
-
+    private boolean isInterstitialLoaded = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,10 +71,7 @@ public class MainActivity extends AppCompatActivity {
         OneSignal.initWithContext(this);
         OneSignal.setAppId(getString(R.string.one_signal_app_id));
 
-        // Initialize the Audience Network SDK
-        AudienceNetworkAds.initialize(this);
-        loadBannerAd();
-        loadInterstitialAd();
+        UnityAds.initialize(MainActivity.this,getString(R.string.unity_game_id),false,this);
 
         firebaseAnalytics = FirebaseAnalytics.getInstance(this);
         firebaseApiManager = FirebaseApiManager.getInstance();
@@ -120,9 +114,13 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void handleSharedIntent() {
-        shareIntentText = IntentUtils.extractSharedText(getIntent());
-        if (shareIntentText != null && !shareIntentText.isEmpty()) {
-            handleActionDown();
+        String sharedURL = IntentUtils.extractSharedText(getIntent());
+        if (sharedURL != null && !sharedURL.isEmpty()) {
+            videoURL = sharedURL;
+            if (!downloadFroze) { // Only proceed if not already downloading
+                handleActionDown();
+            }
+            getIntent().removeExtra(Intent.EXTRA_TEXT); // Clear the intent to prevent reprocessing
         }
     }
 
@@ -131,7 +129,7 @@ public class MainActivity extends AppCompatActivity {
             if (!downloadFroze) {
                 switch (event.getAction()) {
                     case MotionEvent.ACTION_DOWN:
-                        shareIntentText = "";
+                        videoURL = "";
                         handleActionDown();
                         break;
                     case MotionEvent.ACTION_UP:
@@ -179,6 +177,7 @@ public class MainActivity extends AppCompatActivity {
             checkForUpdate();
         }else{
             Toast.makeText(this, "No internet connection", Toast.LENGTH_LONG).show();
+            videoURL = "";
         }
 
     }
@@ -219,67 +218,88 @@ public class MainActivity extends AppCompatActivity {
                 });
     }
 
+    boolean checkURLValidity(){
+
+        if(videoURL.isEmpty() && ClipboardUtils.getClipBoardLink(this).isEmpty()){
+            return  false;
+        }
+
+        if(!videoURL.isEmpty()){
+            if(!ClipboardUtils.isURLInClipboard(videoURL)){
+                return false;
+            }
+        }
+
+        if(! ClipboardUtils.getClipBoardLink(this).isEmpty()){
+            if(!ClipboardUtils.isURLInClipboard( ClipboardUtils.getClipBoardLink(this))){
+                return false;
+            }
+        }
+
+        return true;
+
+    }
+
+    String getVideoUrl(){
+        if(!videoURL.isEmpty()){
+            return videoURL;
+        }else{
+            return ClipboardUtils.getClipBoardLink(this);
+        }
+    }
+
+    void showInterstitialAd(){
+        UnityAds.show(MainActivity.this, "Interstitial_Android", new IUnityAdsShowListener() {
+            @Override
+            public void onUnityAdsShowFailure(String placementId, UnityAds.UnityAdsShowError error, String message) {
+                Log.e("UnityAds", "Interstitial ad show failed: " + message);
+                startDownload();
+            }
+
+            @Override
+            public void onUnityAdsShowStart(String placementId) {
+                Log.d("UnityAds", "Interstitial ad started");
+            }
+
+            @Override
+            public void onUnityAdsShowClick(String placementId) {
+                Log.d("UnityAds", "Interstitial ad clicked");
+            }
+
+            @Override
+            public void onUnityAdsShowComplete(String placementId, UnityAds.UnityAdsShowCompletionState state) {
+                Log.d("UnityAds", "Interstitial ad completed with state: " + state);
+                startDownload();
+            }
+        });
+    }
+
     private void preStartDownload() {
 
-        if(interstitialAd.isAdLoaded()){
-            interstitialAd.show();
+        // Check For URL Validity
+
+        if(checkURLValidity()){
+            videoURL = getVideoUrl();
         }else{
+            Toast.makeText(this, "Copy Video URL First", Toast.LENGTH_SHORT).show();
+            videoURL = "";
+            return;
+        }
+
+//      Check if the interstitial ad is loaded
+
+        if (isInterstitialLoaded) {
+            showInterstitialAd();
+        } else {
             startDownload();
         }
+//        startDownload();
     }
 
     void startDownload(){
         downloadFroze = true;
-        VideoUtils.fetchVideoData(MainActivity.this, progressBar, tvWait, shareIntentText);
-    }
-
-    void loadBannerAd(){
-        adView = new AdView(this, getString(R.string.fb_banner_ad), AdSize.BANNER_HEIGHT_50);
-        LinearLayout adContainer = (LinearLayout) findViewById(R.id.banner_container);
-        adContainer.addView(adView);
-        adView.loadAd();
-    }
-
-    void loadInterstitialAd() {
-
-        interstitialAd = new InterstitialAd(this, getString(R.string.fb_interstitial_ad));
-        InterstitialAdListener interstitialAdListener = new InterstitialAdListener() {
-            @Override
-            public void onInterstitialDisplayed(Ad ad) {
-
-            }
-
-            @Override
-            public void onInterstitialDismissed(Ad ad) {
-                startDownload();
-                loadInterstitialAd();
-            }
-
-            @Override
-            public void onError(Ad ad, AdError adError) {
-                loadInterstitialAd();
-            }
-
-            @Override
-            public void onAdLoaded(Ad ad) {
-
-            }
-
-            @Override
-            public void onAdClicked(Ad ad) {
-
-            }
-
-            @Override
-            public void onLoggingImpression(Ad ad) {
-
-            }
-        };
-
-        interstitialAd.loadAd(
-                interstitialAd.buildLoadAdConfig()
-                        .withAdListener(interstitialAdListener)
-                        .build());
+        VideoUtils.fetchVideoData(MainActivity.this, progressBar, tvWait, videoURL);
+        videoURL = "";
     }
 
     public void github(View view) {
@@ -316,15 +336,40 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onDestroy() {
-        if (interstitialAd != null) {
-            interstitialAd.destroy();
-        }
-        super.onDestroy();
+    public void onBackPressed() {
+        super.onBackPressed();
     }
 
     @Override
-    public void onBackPressed() {
-        super.onBackPressed();
+    public void onInitializationComplete() {
+        loadInterstitialAd();
+    }
+
+    @Override
+    public void onInitializationFailed(UnityAds.UnityAdsInitializationError error, String message) {
+        Toast.makeText(this, "Unity Initialized Failed", Toast.LENGTH_SHORT).show();
+
+    }
+
+    private void loadInterstitialAd() {
+
+        isInterstitialLoaded = false;
+
+        if (UnityAds.isInitialized()) {
+            UnityAds.load(getString(R.string.unity_interstitial_id), new IUnityAdsLoadListener() {
+                @Override
+                public void onUnityAdsAdLoaded(String placementId) {
+                    Log.d("UnityAds", "Interstitial ad loaded for placement: " + placementId);
+                    isInterstitialLoaded = true;
+                }
+
+                @Override
+                public void onUnityAdsFailedToLoad(String placementId, UnityAds.UnityAdsLoadError error, String message) {
+                    Log.e("UnityAds", "Interstitial ad failed to load: " + message);
+                }
+            });
+        } else {
+            Log.e("UnityAds", "Unity Ads not initialized yet");
+        }
     }
 }

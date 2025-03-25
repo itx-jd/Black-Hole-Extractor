@@ -11,8 +11,8 @@ android {
         applicationId "com.blackhole.downloaders"
         minSdk 26
         targetSdk 34
-        versionCode 6
-        versionName "1.5"
+        versionCode 7
+        versionName "1.6"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -43,5 +43,6 @@ dependencies {
     implementation 'com.squareup.okhttp3:okhttp:4.12.0'
     implementation 'com.google.firebase:firebase-analytics:22.2.0'
     implementation 'com.onesignal:OneSignal:[4.0.0, 4.99.99]'
-    implementation 'com.facebook.android:audience-network-sdk:6.+'
+
+    implementation 'com.unity3d.ads:unity-ads:4.7.0'
 }

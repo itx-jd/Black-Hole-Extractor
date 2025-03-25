@@ -35,7 +35,7 @@ public class DownloadUtils {
 
     private static final String CHANNEL_ID = "download_channel";
     private static final int NOTIFICATION_ID = 1;
-    private static final long UPDATE_INTERVAL_MS = 500; // Update every 500ms
+    private static final long UPDATE_INTERVAL_MS = 500;
 
     public static void downloadFileFromURL(final Context context, DownloadItem item,
                                            final LinearProgressIndicator progressBar, final TextView textView) {
@@ -108,8 +108,6 @@ public class DownloadUtils {
     private static String saveFile(Context context, InputStream inputStream, int totalSize, String fileExtension, Handler handler,
                                    TextView textView, LinearProgressIndicator progressBar, NotificationManager manager,
                                    NotificationCompat.Builder builder) throws Exception {
-
-
         if (totalSize <= 0) {
             handler.post(() -> textView.setText("Unknown file size, downloading..."));
             // Handle indeterminate progress if desired
