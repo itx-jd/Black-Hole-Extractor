@@ -11,6 +11,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -43,7 +44,7 @@ import com.unity3d.services.banners.BannerErrorInfo;
 import com.unity3d.services.banners.BannerView;
 import com.unity3d.services.banners.UnityBannerSize;
 
-public class MainActivity extends AppCompatActivity implements IUnityAdsInitializationListener {
+public class MainActivity extends AppCompatActivity implements IUnityAdsInitializationListener ,BannerView.IListener{
 
     private ImageView ivRound, ivInfo;
     private LinearProgressIndicator progressBar;
@@ -60,6 +61,9 @@ public class MainActivity extends AppCompatActivity implements IUnityAdsInitiali
     private static final int PERMISSION_REQUEST_CODE = 123;
     public static boolean downloadFroze = false;
     private boolean isInterstitialLoaded = false;
+
+    BannerView topBanner;
+    RelativeLayout topBannerView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -83,6 +87,18 @@ public class MainActivity extends AppCompatActivity implements IUnityAdsInitiali
         handleSharedIntent();
         setupTouchListener();
         requestPermissionsIfNeeded();
+    }
+
+    void loadBanner(){
+        topBanner = new BannerView(this, "Banner_Android", new UnityBannerSize(320, 50));
+        // Set the listener for banner lifcycle events:
+        topBanner.setListener(this);
+        // Request a banner ad:
+        topBanner.load();
+        // Get the banner view:
+        topBannerView = findViewById(R.id.topBanner);
+        // Associate the banner view object with the banner view:
+        topBannerView.addView(topBanner);
     }
 
     private void initializeUI() {
@@ -173,12 +189,7 @@ public class MainActivity extends AppCompatActivity implements IUnityAdsInitiali
         ivRound.setImageResource(hoverImageResource);
         AnimationUtils.scaleImageView(ivRound, R.dimen.image_original_width, -20);
 
-        if(AppUtils.isInternetAvailable()){
-            checkForUpdate();
-        }else{
-            Toast.makeText(this, "No internet connection", Toast.LENGTH_LONG).show();
-            videoURL = "";
-        }
+        checkForUpdate();
 
     }
 
@@ -342,6 +353,7 @@ public class MainActivity extends AppCompatActivity implements IUnityAdsInitiali
 
     @Override
     public void onInitializationComplete() {
+        loadBanner();
         loadInterstitialAd();
     }
 
@@ -371,5 +383,25 @@ public class MainActivity extends AppCompatActivity implements IUnityAdsInitiali
         } else {
             Log.e("UnityAds", "Unity Ads not initialized yet");
         }
+    }
+
+    @Override
+    public void onBannerLoaded(BannerView bannerAdView) {
+        Log.d("UnityAds", "Banner Loaded");
+    }
+
+    @Override
+    public void onBannerClick(BannerView bannerAdView) {
+
+    }
+
+    @Override
+    public void onBannerFailedToLoad(BannerView bannerAdView, BannerErrorInfo errorInfo) {
+        Log.d("UnityAds", "Banner Failed To Load");
+    }
+
+    @Override
+    public void onBannerLeftApplication(BannerView bannerView) {
+
     }
 }
