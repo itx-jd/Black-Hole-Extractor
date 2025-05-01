@@ -28,7 +28,7 @@ To use BlackHole++, you need a RapidAPI key for the Black Hole API. Follow these
 🎥 **Watch the Tutorial:**  
 Check out this step-by-step video guide to get your API key:
 
-[![Watch the video](https://img.youtube.com/vi/FvOzDM7_V2g/maxresdefault.jpg)](https://youtu.be/FvOzDM7_V2g)
+[![Watch the video](https://img.youtube.com/vi/FvOzDM7_V2g/mqdefault.jpg)](https://youtu.be/FvOzDM7_V2g)
 
 ---
 
