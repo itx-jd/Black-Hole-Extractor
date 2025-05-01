@@ -45,7 +45,6 @@ public class VideoUtils {
         if (item.getUrl().startsWith("Error")) {
             Log.e("VideoUtils", "Error fetching video data: " + item.getUrl());
             Toast.makeText(context, "Failed To Fetch Download Link", Toast.LENGTH_SHORT).show();
-            FirebaseUtils.reportUrlToFirebase(context, url);
             DialogUtils.showFailedDialog(context);
             tvWait.setText("Download Failed");
             MainActivity.downloadFroze = false;

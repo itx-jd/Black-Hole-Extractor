@@ -22,7 +22,6 @@ public class ClipboardUtils {
         return clipboardText.startsWith("https://") || clipboardText.startsWith("http://");
     }
 
-
     // Return empty string if null or empty
     public static String getClipBoardLink(Context context) {
         try {

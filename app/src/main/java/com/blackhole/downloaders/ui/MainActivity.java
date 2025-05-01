@@ -6,12 +6,10 @@ import android.Manifest;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -26,27 +24,17 @@ import com.blackhole.downloaders.utils.AnimationUtils;
 import com.blackhole.downloaders.utils.AppUtils;
 import com.blackhole.downloaders.utils.ClipboardUtils;
 import com.blackhole.downloaders.utils.DialogUtils;
-import com.blackhole.downloaders.utils.FirebaseApiManager;
-import com.blackhole.downloaders.utils.FirebaseUtils;
 import com.blackhole.downloaders.utils.IntentUtils;
 import com.blackhole.downloaders.utils.PermissionUtils;
+import com.blackhole.downloaders.utils.SharedPrefsUtil;
 import com.blackhole.downloaders.utils.UIUtils;
 import com.blackhole.downloaders.utils.VideoUtils;
 import com.google.android.material.progressindicator.LinearProgressIndicator;
-import com.google.firebase.analytics.FirebaseAnalytics;
-import com.google.firebase.database.FirebaseDatabase;
-import com.onesignal.OneSignal;
-import com.unity3d.ads.IUnityAdsInitializationListener;
-import com.unity3d.ads.IUnityAdsLoadListener;
-import com.unity3d.ads.IUnityAdsShowListener;
-import com.unity3d.ads.UnityAds;
-import com.unity3d.services.banners.BannerErrorInfo;
-import com.unity3d.services.banners.BannerView;
-import com.unity3d.services.banners.UnityBannerSize;
 
-public class MainActivity extends AppCompatActivity implements IUnityAdsInitializationListener ,BannerView.IListener{
 
-    private ImageView ivRound, ivInfo;
+public class MainActivity extends AppCompatActivity{
+
+    private ImageView ivRound, ivInfo, ivSettings;
     private LinearProgressIndicator progressBar;
     private LinearLayout layoutTitle, layoutFollow;
     private TextView tvWait;
@@ -55,15 +43,9 @@ public class MainActivity extends AppCompatActivity implements IUnityAdsInitiali
     private int hoverImageResource = R.drawable.btn_no_back;
 
     private String videoURL = "";
-    private FirebaseAnalytics firebaseAnalytics;
-    private FirebaseApiManager firebaseApiManager;
 
     private static final int PERMISSION_REQUEST_CODE = 123;
     public static boolean downloadFroze = false;
-    private boolean isInterstitialLoaded = false;
-
-    BannerView topBanner;
-    RelativeLayout topBannerView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,17 +53,10 @@ public class MainActivity extends AppCompatActivity implements IUnityAdsInitiali
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
         setContentView(R.layout.activity_main);
 
-        // OneSignal Initialization
-        OneSignal.initWithContext(this);
-        OneSignal.setAppId(getString(R.string.one_signal_app_id));
-
-        UnityAds.initialize(MainActivity.this,getString(R.string.unity_game_id),false,this);
-
-        firebaseAnalytics = FirebaseAnalytics.getInstance(this);
-        firebaseApiManager = FirebaseApiManager.getInstance();
-
-        // Load API keys when app starts
-        loadApiKeys();
+        // Load API KEY
+        if(SharedPrefsUtil.isApiKeyPresent(this)){
+            AppUtils.RAPID_API_KEY = SharedPrefsUtil.getApiKey(this);
+        }
 
         initializeUI();
         handleSharedIntent();
@@ -89,17 +64,6 @@ public class MainActivity extends AppCompatActivity implements IUnityAdsInitiali
         requestPermissionsIfNeeded();
     }
 
-    void loadBanner(){
-        topBanner = new BannerView(this, "Banner_Android", new UnityBannerSize(320, 50));
-        // Set the listener for banner lifcycle events:
-        topBanner.setListener(this);
-        // Request a banner ad:
-        topBanner.load();
-        // Get the banner view:
-        topBannerView = findViewById(R.id.topBanner);
-        // Associate the banner view object with the banner view:
-        topBannerView.addView(topBanner);
-    }
 
     private void initializeUI() {
         layoutTitle = findViewById(R.id.layout_title);
@@ -108,27 +72,11 @@ public class MainActivity extends AppCompatActivity implements IUnityAdsInitiali
         tvWait = findViewById(R.id.tv_wait);
         progressBar = findViewById(R.id.progressBar);
         ivInfo = findViewById(R.id.iv_info);
+        ivSettings = findViewById(R.id.ivSettings);
 
         ivRound.setImageResource(originalImageResource);
-        UIUtils.delayedVisibility(layoutTitle, layoutFollow, ivInfo);
+        UIUtils.delayedVisibility(layoutTitle, layoutFollow, ivInfo,ivSettings);
     }
-
-    private void loadApiKeys() {
-        firebaseApiManager.fetchApiKeys(new FirebaseApiManager.ApiKeyCallback() {
-            @Override
-            public void onApiKeysLoaded(String rapid_api,String terabox_api) {
-                Log.d("MainActivity", "API keys loaded successfully");
-            }
-
-            @Override
-            public void onError(String error) {
-                Toast.makeText(MainActivity.this,
-                        "Failed to load API keys: " + error,
-                        Toast.LENGTH_LONG).show();
-            }
-        });
-    }
-
     private void handleSharedIntent() {
         String sharedURL = IntentUtils.extractSharedText(getIntent());
         if (sharedURL != null && !sharedURL.isEmpty()) {
@@ -189,7 +137,7 @@ public class MainActivity extends AppCompatActivity implements IUnityAdsInitiali
         ivRound.setImageResource(hoverImageResource);
         AnimationUtils.scaleImageView(ivRound, R.dimen.image_original_width, -20);
 
-        checkForUpdate();
+        checkForAPIKEY();
 
     }
 
@@ -210,23 +158,13 @@ public class MainActivity extends AppCompatActivity implements IUnityAdsInitiali
         AnimationUtils.scaleImageView(ivRound, R.dimen.image_original_width, +20);
     }
 
-    private void checkForUpdate() {
-        FirebaseUtils.getAppVersion(FirebaseDatabase.getInstance().getReference("app_version"),
-                new FirebaseUtils.FirebaseCallback() {
-                    @Override
-                    public void onSuccess(String latestVersion) {
-                        if (AppUtils.isVersionOutdated(MainActivity.this, latestVersion)) {
-                            DialogUtils.showUpdateDialog(MainActivity.this);
-                        } else {
-                            preStartDownload();
-                        }
-                    }
+    private void checkForAPIKEY() {
 
-                    @Override
-                    public void onFailure(Exception e) {
-                        preStartDownload();
-                    }
-                });
+        if(AppUtils.RAPID_API_KEY.isEmpty()){
+            DialogUtils.showAPIDialog(MainActivity.this);
+        }else{
+            preStartDownload();
+        }
     }
 
     boolean checkURLValidity(){
@@ -259,32 +197,6 @@ public class MainActivity extends AppCompatActivity implements IUnityAdsInitiali
         }
     }
 
-    void showInterstitialAd(){
-        UnityAds.show(MainActivity.this, "Interstitial_Android", new IUnityAdsShowListener() {
-            @Override
-            public void onUnityAdsShowFailure(String placementId, UnityAds.UnityAdsShowError error, String message) {
-                Log.e("UnityAds", "Interstitial ad show failed: " + message);
-                startDownload();
-            }
-
-            @Override
-            public void onUnityAdsShowStart(String placementId) {
-                Log.d("UnityAds", "Interstitial ad started");
-            }
-
-            @Override
-            public void onUnityAdsShowClick(String placementId) {
-                Log.d("UnityAds", "Interstitial ad clicked");
-            }
-
-            @Override
-            public void onUnityAdsShowComplete(String placementId, UnityAds.UnityAdsShowCompletionState state) {
-                Log.d("UnityAds", "Interstitial ad completed with state: " + state);
-                startDownload();
-            }
-        });
-    }
-
     private void preStartDownload() {
 
         // Check For URL Validity
@@ -297,14 +209,7 @@ public class MainActivity extends AppCompatActivity implements IUnityAdsInitiali
             return;
         }
 
-//      Check if the interstitial ad is loaded
-
-        if (isInterstitialLoaded) {
-            showInterstitialAd();
-        } else {
-            startDownload();
-        }
-//        startDownload();
+        startDownload();
     }
 
     void startDownload(){
@@ -326,17 +231,7 @@ public class MainActivity extends AppCompatActivity implements IUnityAdsInitiali
     }
 
     public void showInfoDialog(View view) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        View dialogView = getLayoutInflater().inflate(R.layout.dialog_platform, null);
-        builder.setView(dialogView);
-        AlertDialog dialog = builder.create();
-
-        dialogView.findViewById(R.id.dialog_request_button).setOnClickListener(v -> {
-            openUrlInBrowser(this, getString(R.string.platform_request_form));
-            dialog.dismiss();
-        });
-
-        dialog.show();
+        DialogUtils.showInfoDialog(this);
     }
 
     @Override
@@ -351,57 +246,7 @@ public class MainActivity extends AppCompatActivity implements IUnityAdsInitiali
         super.onBackPressed();
     }
 
-    @Override
-    public void onInitializationComplete() {
-        loadBanner();
-        loadInterstitialAd();
-    }
-
-    @Override
-    public void onInitializationFailed(UnityAds.UnityAdsInitializationError error, String message) {
-        Toast.makeText(this, "Unity Initialized Failed", Toast.LENGTH_SHORT).show();
-
-    }
-
-    private void loadInterstitialAd() {
-
-        isInterstitialLoaded = false;
-
-        if (UnityAds.isInitialized()) {
-            UnityAds.load(getString(R.string.unity_interstitial_id), new IUnityAdsLoadListener() {
-                @Override
-                public void onUnityAdsAdLoaded(String placementId) {
-                    Log.d("UnityAds", "Interstitial ad loaded for placement: " + placementId);
-                    isInterstitialLoaded = true;
-                }
-
-                @Override
-                public void onUnityAdsFailedToLoad(String placementId, UnityAds.UnityAdsLoadError error, String message) {
-                    Log.e("UnityAds", "Interstitial ad failed to load: " + message);
-                }
-            });
-        } else {
-            Log.e("UnityAds", "Unity Ads not initialized yet");
-        }
-    }
-
-    @Override
-    public void onBannerLoaded(BannerView bannerAdView) {
-        Log.d("UnityAds", "Banner Loaded");
-    }
-
-    @Override
-    public void onBannerClick(BannerView bannerAdView) {
-
-    }
-
-    @Override
-    public void onBannerFailedToLoad(BannerView bannerAdView, BannerErrorInfo errorInfo) {
-        Log.d("UnityAds", "Banner Failed To Load");
-    }
-
-    @Override
-    public void onBannerLeftApplication(BannerView bannerView) {
-
+    public void navigateSettings(View view) {
+        startActivity(new Intent(this, APIKeyActivity.class));
     }
 }

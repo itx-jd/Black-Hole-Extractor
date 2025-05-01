@@ -8,35 +8,31 @@
 
 ---
 
-## 📜 Supported Platforms
-
-BlackHole++ supports over 40+ platforms, including popular ones like **Facebook**, **Twitter**, **TikTok**, and many more. 
-For the full list of supported platforms, please check out the [Supported Sites](https://github.com/itx-jd/Black-Hole-Extractor/blob/main/assets/supportedsites.md).
-
+## ✨ Key Features  
+- **Supports Major Platforms:** Download from social media and more.
+- **Lightweight:** Just **9MB** for fast, smooth performance.
+- **One-Tap Downloads:** Copy or share a link—BlackHole++ handles the rest.
+- **Open Source:** Free to use, modify, and improve.
+- **No Ads:** Enjoy a clean, ad-free experience.
 ---
 
-## ✨ Key Features  
-- **Support for 40+ Platforms:** From social media to other websites, we’ve got you covered.
-- **Lightweight & Fast:** Just **9MB in size**, ensuring smooth performance without hogging storage.  
-- **Clean UI:** No bloat, no distractions—just pure functionality.  
-- **Copy-Paste Simplicity:** Copy the video link, open the app, hit the round download button, and voilà—your video is downloading!  
-- **Share-to-Download:** Hit the **share button** on any platform, select BlackHole++, and it’ll automatically detect the link and start downloading.  
-- **Progress Tracker:** Watch your downloads in real time.  
-- **Request Platforms:** Suggest platforms we don’t support via the **Platform Request Form**, and we’ll add them ASAP.  
-- **Completely Open Source:** Modify, improve, or explore the app’s code—possibilities are endless!  
+## 🔑 How to Get Your API Key
+To use BlackHole++, you need a RapidAPI key for the Black Hole API. Follow these steps:
+
+1. **Sign Up:** Create an account at [rapidapi.com](https://rapidapi.com).
+2. **Find the API:** Search for "Social Download All In One" in the RapidAPI marketplace or visit [this link](https://rapidapi.com/nguyenmanhict-MuTUtGWD7K/api/social-download-all-in-one).
+3. **Subscribe:** Choose the free plan to get started.
+4. **Copy Your Key:** Navigate to the "Code Snippets" section and copy your API key.
+5. **Enter in App:** Open BlackHole++, paste the key in the API key input field, and save it.
+
+🎥 **Watch the Tutorial:**  
+Check out this step-by-step video guide to get your API key:
+<iframe width="560" height="315" src="https://www.youtube.com/embed/FvOzDM7_V2g?si=_8ileuTW_PYYBkcT" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
 ---
 
 ## 📸 Screenshots  
 ![](assets/screenshots.gif)
-
----
-
-## 🛠 Why BlackHole++?  
-- **Saves Time:** ⏳ Download videos in seconds.  
-- **Lightweight & Smooth:** 🪶 Designed for efficiency.  
-- **No Extra Features:** 🎯 Focused on the core purpose.  
-- **Open Source:** 🌟 Contribute or customize as you like!
 
 --- 
 

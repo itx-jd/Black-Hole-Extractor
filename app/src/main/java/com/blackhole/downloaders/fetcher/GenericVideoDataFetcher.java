@@ -3,9 +3,8 @@ package com.blackhole.downloaders.fetcher;
 import android.os.AsyncTask;
 
 import com.blackhole.downloaders.callback.Callback;
-import com.blackhole.downloaders.helper.BlackHoleApp;
 import com.blackhole.downloaders.model.DownloadItem;
-import com.blackhole.downloaders.utils.FirebaseApiManager;
+import com.blackhole.downloaders.utils.AppUtils;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -27,7 +26,6 @@ public class GenericVideoDataFetcher implements VideoDataFetcher {
 
     private static class FetchVideoDataTask extends AsyncTask<String, Void, DownloadItem> {
         private Callback callback;
-        private FirebaseApiManager firebaseApiManager = FirebaseApiManager.getInstance();
 
         FetchVideoDataTask(Callback callback) {
             this.callback = callback;
@@ -37,7 +35,7 @@ public class GenericVideoDataFetcher implements VideoDataFetcher {
         protected DownloadItem doInBackground(String... params) {
             String clipboardText = params[0];
             String apiUrl = "https://social-download-all-in-one.p.rapidapi.com/v1/social/autolink";
-            String apiKey = firebaseApiManager.getRapidApiKey();
+            String apiKey = AppUtils.RAPID_API_KEY;
 
             OkHttpClient client = new OkHttpClient();
             MediaType mediaType = MediaType.parse("application/json");

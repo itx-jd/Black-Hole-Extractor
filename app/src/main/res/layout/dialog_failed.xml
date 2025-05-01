@@ -39,21 +39,37 @@
                 android:id="@+id/dialog_message"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Please restart the app and try again. If the issue persists, it might be a glitch or the platform may not be supported yet."
+                android:text="Please restart the app and try again. If the issue continues, update the API key or note that the video/platform may not be supported."
                 android:textColor="@color/white"
                 android:textSize="14sp"
                 android:fontFamily="@font/inter_tight_thin"
                 android:gravity="center"
                 android:layout_marginTop="16dp"/>
 
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/dialog_update_button"
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Restart"
-                android:textColor="@color/white"
-                android:layout_marginTop="20dp" />
+                android:layout_marginTop="20dp"
+                android:orientation="horizontal"
+                android:gravity="center">
 
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/dialog_api_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="5dp"
+                    android:text="Update API Key"
+                    android:textColor="@color/white" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/dialog_restart_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="5dp"
+                    android:text="Restart"
+                    android:textColor="@color/white" />
+
+            </LinearLayout>
 
         </LinearLayout>
 
